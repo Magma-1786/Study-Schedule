@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grade 11 Study Schedule · 2026</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Georgia', serif;
+      background: #0f0f13;
+      color: #e8e4dc;
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; }
+
+    /* Header */
+    .header { text-align: center; margin-bottom: 2rem; }
+    .header .eyebrow { font-size: 0.72rem; letter-spacing: 0.25em; color: #666; text-transform: uppercase; margin-bottom: 0.5rem; font-family: sans-serif; }
+    .header h1 { font-size: 2rem; font-weight: normal; letter-spacing: 0.02em; }
+    .header p { color: #666; margin-top: 0.4rem; font-size: 0.88rem; font-family: sans-serif; }
+
+    /* Cards */
+    .card { background: #1a1a22; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; border: 1px solid #2a2a35; }
+    .card-label { font-size: 0.68rem; letter-spacing: 0.2em; color: #666; text-transform: uppercase; margin-bottom: 0.75rem; font-family: sans-serif; }
+
+    /* Progress */
+    .progress-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+    .progress-row span { font-size: 0.8rem; color: #e8e4dc; font-family: sans-serif; }
+    .progress-track { background: #0f0f13; border-radius: 99px; height: 7px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #4f8ef7, #3dbf7e); border-radius: 99px; transition: width 0.35s ease; }
+    .progress-pct { text-align: right; font-size: 0.7rem; color: #444; margin-top: 0.3rem; font-family: sans-serif; }
+
+    /* Exam dates */
+    .exam-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .exam-chip { background: #0f0f13; border-radius: 6px; padding: 0.35rem 0.65rem; font-size: 0.75rem; border: 1px solid #2a2a35; font-family: sans-serif; }
+    .exam-chip .date { color: #666; margin-right: 0.35rem; }
+
+    /* Filters */
+    .filters { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.75rem; }
+    .filter-btn {
+      background: #1a1a22; color: #888; border: 1px solid #2a2a35;
+      border-radius: 20px; padding: 0.3rem 0.85rem; font-size: 0.75rem;
+      cursor: pointer; font-family: sans-serif; transition: all 0.2s;
+    }
+    .filter-btn.active { color: #0f0f13; border-color: transparent; font-weight: 700; }
+
+    /* Day row */
+    .day-wrap { margin-bottom: 0.85rem; }
+    .day-wrap.weekend { opacity: 0.82; }
+    .day-header {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.85rem 1.1rem; border-radius: 10px;
+      border: 1px solid #2a2a35; cursor: pointer;
+      background: #16161f; transition: background 0.15s, border-color 0.15s;
+      user-select: none;
+    }
+    .day-header.open { border-radius: 10px 10px 0 0; background: #1e1e2a; border-bottom-color: #2a2a35; }
+    .day-header.all-done { background: #0c1a0c; border-color: #3dbf7e33; }
+    .day-header.is-exam { border-color: #e8e4dc22; }
+    .day-header.is-cycle { border-color: #f7c94f44; }
+    .day-header.is-push { border-color: #4f8ef744; }
+
+    .day-title { flex: 1; display: flex; align-items: center; flex-wrap: wrap; gap: 0.35rem; }
+    .day-title strong { font-size: 0.95rem; }
+    .day-title strong.done { text-decoration: line-through; color: #555; }
+    .badge {
+      font-size: 0.68rem; padding: 0.1rem 0.5rem; border-radius: 10px;
+      font-family: sans-serif; font-weight: 600;
+    }
+    .badge.today   { color: #4f8ef7; background: #4f8ef720; }
+    .badge.exam    { color: #e8e4dc; background: #ffffff15; }
+    .badge.cycle   { color: #f7c94f; background: #f7c94f20; }
+    .badge.push    { color: #e05c7d; background: #e05c7d20; }
+    .badge.weekend { color: #555; background: transparent; }
+    .badge.done-badge { color: #3dbf7e; background: transparent; }
+
+    .day-count { font-size: 0.7rem; color: #555; font-family: sans-serif; margin-right: 0.25rem; }
+    .day-count.done { color: #3dbf7e; }
+    .day-chevron { font-size: 0.75rem; color: #444; }
+
+    /* Sessions panel */
+    .sessions-panel {
+      background: #1e1e2a; border-radius: 0 0 10px 10px;
+      border: 1px solid #2a2a35; border-top: none; overflow: hidden;
+    }
+    .session-row {
+      display: flex; gap: 1rem; padding: 0.9rem 1.1rem;
+      border-top: 1px solid #2a2a3530; align-items: flex-start;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .session-row:first-child { border-top: none; }
+    .session-row.checked { background: #0c1a0c; }
+    .session-row.no-check { cursor: default; }
+
+    .checkbox {
+      width: 18px; height: 18px; border-radius: 5px; flex-shrink: 0;
+      margin-top: 2px; border: 2px solid #333;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; font-size: 0.6rem; font-weight: 900; color: #0f0f13;
+    }
+
+    .session-subject { font-weight: 700; font-size: 0.88rem; font-family: sans-serif; }
+    .session-subject.checked { text-decoration: line-through; color: #444 !important; }
+    .session-time { font-size: 0.68rem; color: #555; font-family: sans-serif; }
+    .session-time.exam-time { color: #e05c7d; }
+    .session-task { font-size: 0.83rem; color: #bbb; line-height: 1.55; margin-top: 0.2rem; }
+    .session-task.checked { text-decoration: line-through; color: #444; }
+
+    .footer { text-align: center; margin-top: 2.5rem; color: #3a3a45; font-size: 0.72rem; font-family: sans-serif; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="eyebrow">Crawford Sandton · Grade 11 · 2026</div>
+    <h1>Study Schedule</h1>
+    <p>4 May → 23 June · Full exam period</p>
+  </div>
+
+  <!-- Progress -->
+  <div class="card">
+    <div class="card-label">Progress</div>
+    <div class="progress-row">
+      <span class="card-label" style="margin:0">Sessions completed</span>
+      <span id="progress-text">0 / 0</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="progress-pct" id="progress-pct">0%</div>
+  </div>
+
+  <!-- Exam dates -->
+  <div class="card">
+    <div class="card-label">Exam dates</div>
+    <div class="exam-chips" id="exam-chips"></div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters" id="filters"></div>
+
+  <!-- Schedule -->
+  <div id="schedule"></div>
+
+  <div class="footer">Tap a day to expand · Tap a session to check it off · Filter by subject above</div>
+</div>
+
+<script>
+const SUBJECTS = ["All","Mathematics","Afrikaans","English","Accounting","Life Sciences","CAT"];
+const COLORS = {
+  "Mathematics":"#4f8ef7","Afrikaans":"#e07b3f","English":"#3dbf7e",
+  "Accounting":"#b94fc8","Life Sciences":"#e05c7d","CAT":"#d4a017",
+  "Life Orientation":"#20b2c8","Rest / Light Review":"#888"
+};
+const EXAM_DATES = {
+  "Thu 29 May":[{s:"English P1",c:"#3dbf7e"}],
+  "Mon 1 Jun":[{s:"Mathematics P1",c:"#4f8ef7"}],
+  "Tue 2 Jun":[{s:"CAT Practical",c:"#d4a017"}],
+  "Wed 3 Jun":[{s:"Accounting",c:"#b94fc8"}],
+  "Thu 4 Jun":[{s:"Afrikaans P1",c:"#e07b3f"}],
+  "Fri 5 Jun":[{s:"Life Sciences P1",c:"#e05c7d"}],
+  "Mon 8 Jun":[{s:"Mathematics P2",c:"#4f8ef7"}],
+  "Tue 9 Jun":[{s:"CAT Practical",c:"#d4a017"}],
+  "Wed 10 Jun":[{s:"Life Sciences PAT",c:"#e05c7d"}],
+  "Thu 11 Jun":[{s:"Life Orientation",c:"#20b2c8"}],
+  "Fri 12 Jun":[{s:"English P2",c:"#3dbf7e"}],
+  "Mon 16 Jun":[{s:"Afrikaans P2",c:"#e07b3f"}],
+  "Tue 23 Jun":[{s:"CAT Theory",c:"#d4a017"}],
+};
+
+const SCHEDULE = [
+  {date:"Mon 4 May",isToday:true,sessions:[
+    {sub:"Mathematics",time:"15:00 – 16:30",task:"Functions & Graphs: straight line and parabola – sketch, interpret, find equations (Ch 5)."},
+    {sub:"Afrikaans",time:"17:00 – 18:30",task:"Vraestel 1 – Afdeling A Begrip: Revise all begripstoetsterme and vraagwoorde. Read through past examples."},
+  ]},
+  {date:"Tue 5 May",sessions:[
+    {sub:"Mathematics",time:"15:00 – 16:30",task:"FINAL REVIEW: Graphs + trig – run through all function types, sketching, trig identities and special angles. Early night."},
+    {sub:"Afrikaans",time:"17:00 – 18:30",task:"Vraestel 1 – Afdeling B Opsomming: Practise summary technique. Remember: wenk, voordele, nadele, feit + rede."},
+  ]},
+  {date:"Wed 6 May",isCycleTest:true,sessions:[
+    {sub:"Mathematics",time:"CYCLE TEST",task:"Mathematics Cycle Test – Graphs & Trig Functions. After test: begin trig identities and Pythagoras-type problems."},
+    {sub:"Afrikaans",time:"17:00 – 18:30",task:"Vraestel 1 – Begrip: practise answering all 3 text types. Focus on question word recognition."},
+  ]},
+  {date:"Thu 7 May",sessions:[
+    {sub:"Mathematics",time:"15:00 – 16:30",task:"Trigonometry: identities and Pythagoras-type problems. Do at least 8 practice questions (Ch 6)."},
+    {sub:"Afrikaans",time:"17:00 – 18:30",task:"Vraestel 1 – Opsomming: do one full timed summary (10 marks). Check word count and follow instructions carefully."},
+  ]},
+  {date:"Fri 8 May",sessions:[
+    {sub:"Mathematics",time:"15:00 – 16:30",task:"Mixed graphs + trig practice: sketch trig functions (sin, cos, tan), identify key features and period."},
+    {sub:"Afrikaans",time:"17:00 – 18:30",task:"FINAL REVIEW: Full Begrip + Opsomming mock under timed conditions. Mark and fix weak answers."},
+  ]},
+  {date:"Sat 9 May",isWeekend:true,sessions:[
+    {sub:"Mathematics",time:"09:00 – 11:00",task:"Hyperbola and exponential functions (Ch 5). Transformations and equations of graphs."},
+    {sub:"Afrikaans",time:"13:00 – 15:00",task:"Poem revision – annotate all 3 poems. Test yourself without notes."},
+  ]},
+  {date:"Sun 10 May",isWeekend:true,sessions:[
+    {sub:"Rest / Light Review",time:"Anytime",task:"Light review only. Go over weak areas from the week. Rest is part of the plan."},
+  ]},
+  {date:"Mon 11 May",sessions:[
+    {sub:"Mathematics",time:"15:00 – 16:30",task:"Mixed functions practice – identify equations from graphs, domain/range, graph transformations."},
+    {sub:"English",time:"17:00 – 18:30",task:"P1 – Poetry: study poetic devices + annotate 'Ozymandias' and 'The Sun Rising'."},
+  ]},
+  {date:"Tue 12 May",sessions:[
+    {sub:"Mathematics",time:"15:00 – 16:30",task:"Paper 1 timed practice: 30-min algebra section + 30-min functions. Mark and correct."},
+    {sub:"English",time:"17:00 – 18:30",task:"P1 – Seen poetry continued: 'Remember', 'Mirror', 'Strangers Forever'. Analyse techniques."},
+  ]},
+  {date:"Wed 13 May",sessions:[
+    {sub:"Accounting",time:"15:00 – 16:30",task:"Creditors reconciliations (Ch 2) – understand the process, do practice exercises."},
+    {sub:"English",time:"17:00 – 18:30",task:"P1 – Visual Literacy: practise interpreting adverts, cartoons, photographs. Review notes."},
+  ]},
+  {date:"Thu 14 May",sessions:[
+    {sub:"Accounting",time:"15:00 – 16:30",task:"Depreciation methods – straight-line and diminishing balance (Ch 3 + Gr10). Fixed assets note."},
+    {sub:"English",time:"17:00 – 18:30",task:"P1 – Comprehension & Textual Editing. Do one full comprehension under timed conditions."},
+  ]},
+  {date:"Fri 15 May",sessions:[
+    {sub:"Accounting",time:"15:00 – 16:30",task:"Asset disposal (Ch 3). Work through disposal journal entries and asset disposal accounts."},
+    {sub:"CAT",time:"17:00 – 18:30",task:"Practical: File & folder management + Word Processing. Review shortcuts and formatting rules."},
+  ]},
+  {date:"Sat 16 May",isWeekend:true,sessions:[
+    {sub:"Mathematics",time:"09:00 – 11:00",task:"Full Paper 1 mock exam (2 hours). Use past paper. Mark strictly."},
+    {sub:"English",time:"13:00 – 15:00",task:"P2 – 1984 essay: revise all major themes, characters, key quotes and context."},
+  ]},
+  {date:"Sun 17 May",isWeekend:true,sessions:[
+    {sub:"Rest / Light Review",time:"Anytime",task:"Review mock paper mistakes. Light reading only. Rest and recharge."},
+  ]},
+  {date:"Mon 18 May",sessions:[
+    {sub:"Accounting",time:"15:00 – 16:30",task:"Financial Statements & notes (Ch 4 + Gr10). Income statement and balance sheet structure."},
+    {sub:"Life Sciences",time:"17:00 – 18:30",task:"Viruses, bacteria and micro-organisms in symbiotic relationships (pp. 195–201). Make notes."},
+  ]},
+  {date:"Tue 19 May",sessions:[
+    {sub:"Accounting",time:"15:00 – 16:30",task:"Analysis & Interpretation of Financial Statements (Ch 4). Ratios – learn the formulas."},
+    {sub:"Life Sciences",time:"17:00 – 18:30",task:"Malaria & immune response (pp. 206–207, 215–218, 221–224). Draw and label diagrams."},
+  ]},
+  {date:"Wed 20 May",sessions:[
+    {sub:"Accounting",time:"15:00 – 16:30",task:"Manufacturing accounts (Ch 6) – cost of production, finished goods, WIP."},
+    {sub:"Life Sciences",time:"17:00 – 18:30",task:"Excretory system (pp. 113–140) – kidney structure, urine formation, skin as excretory organ."},
+  ]},
+  {date:"Thu 21 May",sessions:[
+    {sub:"CAT",time:"15:00 – 16:30",task:"Practical: Spreadsheets – formulas, functions, formatting, charts. Do practice exercises."},
+    {sub:"Life Sciences",time:"17:00 – 18:30",task:"Environmental studies (Gr12 textbook pp. 1–36). Ecosystems, biodiversity, human impact."},
+  ]},
+  {date:"Fri 22 May",sessions:[
+    {sub:"Afrikaans",time:"15:00 – 16:30",task:"Vraestel 2 – Tuimeltrein Hfst 1–3. Read summary notes and workkaarte thoroughly."},
+    {sub:"Mathematics",time:"17:00 – 18:30",task:"Paper 2 – Euclidean geometry: all theorems and proofs (Ch 8). Draw diagrams for each."},
+  ]},
+  {date:"Sat 23 May",isWeekend:true,sessions:[
+    {sub:"Accounting",time:"09:00 – 11:00",task:"Full Accounting mock (2 hours). Cover all chapters. Mark and review errors."},
+    {sub:"Life Sciences",time:"13:00 – 15:00",task:"Human nervous system (pp. 141–158) and human eye (pp. 168–182). Diagrams essential."},
+  ]},
+  {date:"Sun 24 May",isWeekend:true,sessions:[
+    {sub:"Rest / Light Review",time:"Anytime",task:"Review Accounting mock errors. Go over any weak areas. Proper rest tonight."},
+  ]},
+  {date:"Mon 25 May",sessions:[
+    {sub:"Mathematics",time:"15:00 – 16:30",task:"Paper 2 – Trigonometry: identities, reduction formulae, special angles (Ch 6). Do exercises."},
+    {sub:"English",time:"17:00 – 18:30",task:"P2 – Transactional Writing: practise email, blog, speech and open letter under exam conditions."},
+  ]},
+  {date:"Tue 26 May",sessions:[
+    {sub:"Life Sciences",time:"15:00 – 16:30",task:"Scientific method – aim, hypothesis, methods, biological drawings, micrograph calculations."},
+    {sub:"CAT",time:"17:00 – 18:30",task:"Theory: System Technologies + Internet & Network Technologies. Review all notes."},
+  ]},
+  {date:"Wed 27 May",sessions:[
+    {sub:"Mathematics",time:"15:00 – 16:30",task:"Full Paper 2 mock (2 hours) – geometry + trig. Mark strictly and note problem areas."},
+    {sub:"Afrikaans",time:"17:00 – 18:30",task:"Vraestel 2 – Funksionele Skryf: practise 2 writing pieces (letter, report, etc.)."},
+  ]},
+  {date:"Thu 28 May",isExamWeek:true,sessions:[
+    {sub:"English",time:"15:00 – 16:30",task:"FINAL REVIEW: Go through all seen poems – annotate and test yourself. Revise poetic devices."},
+    {sub:"English",time:"17:00 – 18:30",task:"FINAL REVIEW: Visual literacy techniques + one timed comprehension. Early night – exam tomorrow."},
+  ]},
+  {date:"Fri 29 May",isExam:true,sessions:[
+    {sub:"English",time:"EXAM",task:"English P1 – Reading (2.5hrs, 85 marks). After exam: begin CAT Practical review – file management and Word."},
+  ]},
+  {date:"Sat 30 May",isWeekend:true,sessions:[
+    {sub:"CAT",time:"09:00 – 11:00",task:"FINAL REVIEW: Spreadsheets – formulas, IF statements, charts, formatting. Do timed practice task."},
+    {sub:"CAT",time:"13:00 – 15:00",task:"FINAL REVIEW: Word Processing – formatting, mail merge, styles. File management shortcuts."},
+  ]},
+  {date:"Sun 31 May",isWeekend:true,sessions:[
+    {sub:"Mathematics",time:"09:00 – 11:00",task:"FINAL REVIEW: Full Paper 1 run-through – algebra, inequalities, number patterns, functions. Early night."},
+    {sub:"Accounting",time:"13:00 – 15:00",task:"FINAL REVIEW: Run through creditors recon, depreciation, disposal, financial statements and ratios."},
+  ]},
+  {date:"Mon 1 Jun",isExam:true,sessions:[
+    {sub:"Mathematics",time:"EXAM",task:"Mathematics P1 (2hrs, 100 marks). After exam: CAT Practical final review – file management and Word."},
+  ]},
+  {date:"Tue 2 Jun",isExam:true,sessions:[
+    {sub:"CAT",time:"EXAM",task:"CAT Practical (2hrs, 120 marks). After exam: Accounting final review – run through all chapters."},
+  ]},
+  {date:"Wed 3 Jun",isExam:true,sessions:[
+    {sub:"Accounting",time:"EXAM",task:"Accounting (2.5hrs, 220 marks). After exam: light Afrikaans poem revision only."},
+  ]},
+  {date:"Thu 4 Jun",isExam:true,sessions:[
+    {sub:"Afrikaans",time:"EXAM",task:"Afrikaans P1 (2.5hrs, 100 marks). After exam: start Life Sciences review – viruses and immune system."},
+  ]},
+  {date:"Fri 5 Jun",isExam:true,sessions:[
+    {sub:"Life Sciences",time:"EXAM",task:"Life Sciences P1 (3hrs, 200 marks). After exam: rest. Big week done."},
+  ]},
+  {date:"Sat 6 Jun",isWeekend:true,sessions:[
+    {sub:"Mathematics",time:"09:00 – 11:00",task:"FINAL REVIEW: Paper 2 – Euclidean geometry all theorems and proofs. Draw every diagram."},
+    {sub:"Mathematics",time:"13:00 – 15:00",task:"FINAL REVIEW: Paper 2 – Trigonometry: identities, reduction, special angles. Timed questions."},
+  ]},
+  {date:"Sun 7 Jun",isWeekend:true,sessions:[
+    {sub:"Mathematics",time:"09:00 – 11:00",task:"FINAL REVIEW: Full Paper 2 mock under exam conditions (2hrs). Mark and review weak areas."},
+    {sub:"Rest / Light Review",time:"Afternoon",task:"Rest. Light notes only if needed. Early night before Maths P2."},
+  ]},
+  {date:"Mon 8 Jun",isExam:true,sessions:[
+    {sub:"Mathematics",time:"EXAM",task:"Mathematics P2 (2hrs, 100 marks). After exam: CAT Practical prep – spreadsheet and Word practice."},
+  ]},
+  {date:"Tue 9 Jun",isExam:true,sessions:[
+    {sub:"CAT",time:"EXAM",task:"CAT Practical – 2nd session (2hrs, 120 marks). After exam: Life Sciences PAT prep – scientific method."},
+  ]},
+  {date:"Wed 10 Jun",isExam:true,sessions:[
+    {sub:"Life Sciences",time:"EXAM",task:"Life Sciences PAT (1hr 40mins, 50 marks). After exam: LO review – EQ, leadership, lifestyle."},
+  ]},
+  {date:"Thu 11 Jun",isExam:true,sessions:[
+    {sub:"Life Orientation",time:"EXAM",task:"Life Orientation (1.5hrs, 70 marks). After exam: English P2 – 1984 essay and transactional writing prep."},
+  ]},
+  {date:"Fri 12 Jun",isExam:true,sessions:[
+    {sub:"English",time:"EXAM",task:"English P2 – Writing (2hrs, 70 marks). After exam: rest. Take the weekend."},
+  ]},
+  {date:"Sat 13 Jun",isWeekend:true,sessions:[
+    {sub:"Rest / Light Review",time:"Anytime",task:"Well-earned rest. Light Afrikaans P2 reading if you feel up to it – Tuimeltrein Hfst 1–3."},
+  ]},
+  {date:"Sun 14 Jun",isWeekend:true,sessions:[
+    {sub:"Afrikaans",time:"09:00 – 11:00",task:"Vraestel 2 – Tuimeltrein Hfst 1–3: detailed character, plot and theme notes from workkaarte."},
+    {sub:"Afrikaans",time:"13:00 – 15:00",task:"Vraestel 2 – Funksionele Skryf: practise both writing pieces (formal letter, report, essay)."},
+  ]},
+  {date:"Mon 15 Jun",isExamWeek:true,sessions:[
+    {sub:"Afrikaans",time:"15:00 – 16:30",task:"FINAL REVIEW: Tuimeltrein – summarise key events per chapter. Test yourself on characters and themes."},
+    {sub:"Afrikaans",time:"17:00 – 18:30",task:"FINAL REVIEW: Practise one full Funksionele Skryf piece under timed conditions. Early night."},
+  ]},
+  {date:"Tue 16 Jun",isExam:true,sessions:[
+    {sub:"Afrikaans",time:"EXAM",task:"Afrikaans P2 (2.5hrs, 100 marks). After exam: begin CAT Theory review – system and network tech."},
+  ]},
+  {date:"Wed 17 Jun",sessions:[
+    {sub:"CAT",time:"15:00 – 16:30",task:"CAT Theory: System Technologies – hardware, software, storage, processing. Review all notes."},
+    {sub:"CAT",time:"17:00 – 18:30",task:"CAT Theory: Internet & Network Technologies – protocols, network types, security."},
+  ]},
+  {date:"Thu 18 Jun",sessions:[
+    {sub:"CAT",time:"15:00 – 16:30",task:"CAT Theory: Information Management + Social Implications. Review notes and Grade 10 work."},
+    {sub:"CAT",time:"17:00 – 18:30",task:"CAT Theory: Solution Development – algorithms, spreadsheet logic, database concepts."},
+  ]},
+  {date:"Fri 19 Jun",sessions:[
+    {sub:"CAT",time:"15:00 – 16:30",task:"CAT Theory: Full Grade 10 revision – all examinable prior content."},
+    {sub:"Rest / Light Review",time:"17:00 – 18:00",task:"Light review of weakest CAT Theory area. Wind down for the weekend."},
+  ]},
+  {date:"Sat 20 Jun",isWeekend:true,sessions:[
+    {sub:"CAT",time:"09:00 – 11:00",task:"CAT Theory: Full past paper practice under timed conditions (2hrs). Mark and note errors."},
+    {sub:"Rest / Light Review",time:"Afternoon",task:"Rest. Review mock errors lightly in the evening if needed."},
+  ]},
+  {date:"Sun 21 Jun",isWeekend:true,sessions:[
+    {sub:"CAT",time:"09:00 – 10:30",task:"FINAL REVIEW: Go through all weak areas from mock. Consolidate notes on each theory section."},
+    {sub:"Rest / Light Review",time:"Afternoon",task:"Rest fully. Everything is covered. Early night before the last exam."},
+  ]},
+  {date:"Mon 22 Jun",isExamWeek:true,sessions:[
+    {sub:"CAT",time:"15:00 – 16:30",task:"FINAL REVIEW: Light run-through of all CAT Theory sections. No new material – consolidate only."},
+  ]},
+  {date:"Tue 23 Jun",isExam:true,sessions:[
+    {sub:"CAT",time:"EXAM",task:"CAT Theory (2hrs, 100 marks). Last exam. Done."},
+  ]},
+];
+
+// --- State ---
+let checked = {};
+let openDay = null;
+let activeFilter = "All";
+
+try { checked = JSON.parse(localStorage.getItem("study-checked") || "{}"); } catch(_){}
+
+function save() {
+  try { localStorage.setItem("study-checked", JSON.stringify(checked)); } catch(_){}
+}
+
+// --- Helpers ---
+function isCheckable(s) { return s.sub !== "Rest / Light Review" && s.time !== "EXAM"; }
+function ck(di, si) { return `${di}-${si}`; }
+
+function allCheckable() {
+  return SCHEDULE.flatMap((d,di) => d.sessions.map((s,si) => ({di,si,s})).filter(x => isCheckable(x.s)));
+}
+function doneCount() { return allCheckable().filter(x => checked[ck(x.di,x.si)]).length; }
+function totalCount() { return allCheckable().length; }
+
+// --- Render exam chips ---
+function renderExamChips() {
+  const el = document.getElementById("exam-chips");
+  el.innerHTML = Object.entries(EXAM_DATES).map(([date, exams]) =>
+    `<div class="exam-chip"><span class="date">${date}</span>${exams.map(e=>`<span style="color:${e.c};font-weight:700">${e.s}</span>`).join(" ")}</div>`
+  ).join("");
+}
+
+// --- Render filters ---
+function renderFilters() {
+  const el = document.getElementById("filters");
+  el.innerHTML = SUBJECTS.map(s => {
+    const col = COLORS[s] || "#e8e4dc";
+    const active = activeFilter === s;
+    return `<button class="filter-btn${active?" active":""}" data-sub="${s}" style="${active?`background:${col};`:""}">${s}</button>`;
+  }).join("");
+  el.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => { activeFilter = btn.dataset.sub; renderAll(); });
+  });
+}
+
+// --- Render progress ---
+function renderProgress() {
+  const done = doneCount(), total = totalCount();
+  const pct = total > 0 ? Math.round(done/total*100) : 0;
+  document.getElementById("progress-text").textContent = `${done} / ${total}`;
+  document.getElementById("progress-fill").style.width = pct + "%";
+  document.getElementById("progress-pct").textContent = pct + "%";
+}
+
+// --- Render schedule ---
+function renderSchedule() {
+  const el = document.getElementById("schedule");
+  el.innerHTML = "";
+
+  SCHEDULE.forEach((day, di) => {
+    const visibleSessions = activeFilter === "All"
+      ? day.sessions
+      : day.sessions.filter(s => s.sub === activeFilter || s.sub === "Rest / Light Review");
+    if (!visibleSessions.length) return;
+
+    const checkable = visibleSessions.filter(s => isCheckable(s));
+    const dayDone = checkable.filter((_,j) => {
+      const si = day.sessions.indexOf(checkable[j]);
+      return checked[ck(di, si)];
+    }).length;
+
+    // recalculate using original indices
+    const checkableOrig = day.sessions.map((s,si)=>({s,si})).filter(x=>isCheckable(x.s));
+    const dayDoneOrig = checkableOrig.filter(x=>checked[ck(di,x.si)]).length;
+    const dayTotalOrig = checkableOrig.length;
+    const allDone = dayTotalOrig > 0 && dayDoneOrig === dayTotalOrig;
+    const isOpen = openDay === di;
+
+    // Header classes
+    let hClass = "day-header";
+    if (isOpen) hClass += " open";
+    if (allDone) hClass += " all-done";
+    else if (day.isExam) hClass += " is-exam";
+    else if (day.isCycleTest) hClass += " is-cycle";
+    else if (day.isExamWeek) hClass += " is-push";
+
+    // Badges
+    let badges = "";
+    if (day.isToday) badges += `<span class="badge today">Today</span>`;
+    if (day.isExam) badges += `<span class="badge exam">📝 Exam</span>`;
+    if (day.isCycleTest) badges += `<span class="badge cycle">📋 Cycle test</span>`;
+    if (day.isExamWeek && !day.isExam) badges += `<span class="badge push">Final push</span>`;
+    if (day.isWeekend && !day.isExam && !day.isCycleTest) badges += `<span class="badge weekend">Weekend</span>`;
+    if (allDone) badges += `<span class="badge done-badge">✓ Done</span>`;
+
+    const countHtml = dayTotalOrig > 0
+      ? `<span class="day-count${allDone?" done":""}">${dayDoneOrig}/${dayTotalOrig}</span>` : "";
+
+    const wrap = document.createElement("div");
+    wrap.className = `day-wrap${day.isWeekend?" weekend":""}`;
+
+    wrap.innerHTML = `
+      <div class="${hClass}" data-di="${di}">
+        <div class="day-title">
+          <strong class="${allDone?"done":""}">${day.date}</strong>
+          ${badges}
+        </div>
+        ${countHtml}
+        <span class="day-chevron">${isOpen?"▲":"▼"}</span>
+      </div>
+      ${isOpen ? renderSessionsHTML(day, di, visibleSessions) : ""}
+    `;
+
+    wrap.querySelector(".day-header").addEventListener("click", () => {
+      openDay = openDay === di ? null : di;
+      renderSchedule();
+    });
+
+    if (isOpen) {
+      wrap.querySelectorAll(".session-row").forEach(row => {
+        const di2 = parseInt(row.dataset.di);
+        const si2 = parseInt(row.dataset.si);
+        if (row.dataset.checkable === "true") {
+          row.addEventListener("click", () => {
+            const k = ck(di2, si2);
+            checked[k] = !checked[k];
+            save();
+            renderProgress();
+            renderSchedule();
+          });
+        }
+      });
+    }
+
+    el.appendChild(wrap);
+  });
+}
+
+function renderSessionsHTML(day, di, visibleSessions) {
+  const rows = visibleSessions.map(s => {
+    const si = day.sessions.indexOf(s);
+    const isDone = !!checked[ck(di, si)];
+    const checkable = isCheckable(s);
+    const isExamTime = s.time === "EXAM";
+    const col = COLORS[s.sub] || "#888";
+
+    const cbStyle = isDone
+      ? `background:${col};border-color:${col}`
+      : `border-color:${isExamTime?"#2a2a35":col+"66"}`;
+
+    return `
+      <div class="session-row${isDone?" checked":""}${!checkable?" no-check":""}" data-di="${di}" data-si="${si}" data-checkable="${checkable}">
+        <div class="checkbox" style="${cbStyle}">${isDone?"✓":""}</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.2rem">
+            <span class="session-subject${isDone?" checked":""}" style="color:${isDone?"#444":col}">${s.sub}</span>
+            <span class="session-time${isExamTime?" exam-time":""}">· ${s.time}</span>
+          </div>
+          <div class="session-task${isDone?" checked":""}">${s.task}</div>
+        </div>
+      </div>`;
+  }).join("");
+  return `<div class="sessions-panel">${rows}</div>`;
+}
+
+function renderAll() {
+  renderProgress();
+  renderFilters();
+  renderSchedule();
+}
+
+renderExamChips();
+renderAll();
+</script>
+</body>
+</html>

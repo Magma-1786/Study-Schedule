@@ -117,7 +117,7 @@
   <div class="header">
     <div class="eyebrow">Crawford Sandton · Grade 11 · 2026</div>
     <h1>Study Schedule</h1>
-    <p>4 May → 23 June · Full exam period</p>
+    <p>4 May → 24 June · Full exam period</p>
   </div>
 
   <!-- Progress -->
@@ -156,17 +156,16 @@ const COLORS = {
 const EXAM_DATES = {
   "Thu 29 May":[{s:"English P1",c:"#3dbf7e"}],
   "Mon 1 Jun":[{s:"Mathematics P1",c:"#4f8ef7"}],
-  "Tue 2 Jun":[{s:"CAT Practical",c:"#d4a017"}],
-  "Wed 3 Jun":[{s:"Accounting",c:"#b94fc8"}],
-  "Thu 4 Jun":[{s:"Afrikaans P1",c:"#e07b3f"}],
-  "Fri 5 Jun":[{s:"Life Sciences P1",c:"#e05c7d"}],
+  "Wed 3 Jun":[{s:"Life Sciences P1",c:"#e05c7d"}],
+  "Thu 4 Jun":[{s:"Business Studies",c:"#b94fc8"}],
   "Mon 8 Jun":[{s:"Mathematics P2",c:"#4f8ef7"}],
   "Tue 9 Jun":[{s:"CAT Practical",c:"#d4a017"}],
-  "Wed 10 Jun":[{s:"Life Sciences PAT",c:"#e05c7d"}],
-  "Thu 11 Jun":[{s:"Life Orientation",c:"#20b2c8"}],
+  "Wed 10 Jun":[{s:"Afrikaans P1",c:"#e07b3f"}],
   "Fri 12 Jun":[{s:"English P2",c:"#3dbf7e"}],
-  "Mon 16 Jun":[{s:"Afrikaans P2",c:"#e07b3f"}],
+  "Thu 18 Jun":[{s:"Life Orientation & Life Sciences PAT",c:"#20b2c8"}],
+  "Mon 22 Jun":[{s:"Afrikaans P2",c:"#e07b3f"}],
   "Tue 23 Jun":[{s:"CAT Theory",c:"#d4a017"}],
+  "Wed 24 Jun":[{s:"Accounting",c:"#b94fc8"}],
 };
 
 const SCHEDULE = [
@@ -285,13 +284,13 @@ const SCHEDULE = [
     {sub:"CAT",time:"EXAM",task:"CAT Practical (2hrs, 120 marks). After exam: Accounting final review – run through all chapters."},
   ]},
   {date:"Wed 3 Jun",isExam:true,sessions:[
-    {sub:"Accounting",time:"EXAM",task:"Accounting (2.5hrs, 220 marks). After exam: light Afrikaans poem revision only."},
+    {sub:"Life Sciences",time:"EXAM",task:"Life Sciences P1 (3hrs, 200 marks). After exam: rest. Big week done."},
   ]},
   {date:"Thu 4 Jun",isExam:true,sessions:[
-    {sub:"Afrikaans",time:"EXAM",task:"Afrikaans P1 (2.5hrs, 100 marks). After exam: start Life Sciences review – viruses and immune system."},
+    {sub:"Accounting",time:"EXAM",task:"Business Studies (2.5hrs, marks). After exam: light Afrikaans poem revision only."},
   ]},
-  {date:"Fri 5 Jun",isExam:true,sessions:[
-    {sub:"Life Sciences",time:"EXAM",task:"Life Sciences P1 (3hrs, 200 marks). After exam: rest. Big week done."},
+  {date:"Fri 5 Jun",isWeekend:true,sessions:[
+    {sub:"Rest / Light Review",time:"Anytime",task:"Rest after first week of exams. Light reading or review if needed."},
   ]},
   {date:"Sat 6 Jun",isWeekend:true,sessions:[
     {sub:"Mathematics",time:"09:00 – 11:00",task:"FINAL REVIEW: Paper 2 – Euclidean geometry all theorems and proofs. Draw every diagram."},
@@ -308,53 +307,54 @@ const SCHEDULE = [
     {sub:"CAT",time:"EXAM",task:"CAT Practical – 2nd session (2hrs, 120 marks). After exam: Life Sciences PAT prep – scientific method."},
   ]},
   {date:"Wed 10 Jun",isExam:true,sessions:[
-    {sub:"Life Sciences",time:"EXAM",task:"Life Sciences PAT (1hr 40mins, 50 marks). After exam: LO review – EQ, leadership, lifestyle."},
+    {sub:"Afrikaans",time:"EXAM",task:"Afrikaans P1 (2.5hrs, 100 marks). After exam: English P2 preparation – 1984 essay and transactional writing."},
   ]},
-  {date:"Thu 11 Jun",isExam:true,sessions:[
-    {sub:"Life Orientation",time:"EXAM",task:"Life Orientation (1.5hrs, 70 marks). After exam: English P2 – 1984 essay and transactional writing prep."},
+  {date:"Thu 11 Jun",isWeekend:true,sessions:[
+    {sub:"Rest / Light Review",time:"Anytime",task:"Rest after Afrikaans exam. Light English P2 review if needed."},
   ]},
   {date:"Fri 12 Jun",isExam:true,sessions:[
     {sub:"English",time:"EXAM",task:"English P2 – Writing (2hrs, 70 marks). After exam: rest. Take the weekend."},
   ]},
   {date:"Sat 13 Jun",isWeekend:true,sessions:[
-    {sub:"Rest / Light Review",time:"Anytime",task:"Well-earned rest. Light Afrikaans P2 reading if you feel up to it – Tuimeltrein Hfst 1–3."},
+    {sub:"Rest / Light Review",time:"Anytime",task:"Well-earned rest. Light review if needed."},
   ]},
   {date:"Sun 14 Jun",isWeekend:true,sessions:[
-    {sub:"Afrikaans",time:"09:00 – 11:00",task:"Vraestel 2 – Tuimeltrein Hfst 1–3: detailed character, plot and theme notes from workkaarte."},
-    {sub:"Afrikaans",time:"13:00 – 15:00",task:"Vraestel 2 – Funksionele Skryf: practise both writing pieces (formal letter, report, essay)."},
+    {sub:"CAT",time:"09:00 – 11:00",task:"CAT Theory: Past paper practice under timed conditions."},
+    {sub:"Rest / Light Review",time:"Afternoon",task:"Rest and consolidate. Early night before final week."},
   ]},
-  {date:"Mon 15 Jun",isExamWeek:true,sessions:[
-    {sub:"Afrikaans",time:"15:00 – 16:30",task:"FINAL REVIEW: Tuimeltrein – summarise key events per chapter. Test yourself on characters and themes."},
-    {sub:"Afrikaans",time:"17:00 – 18:30",task:"FINAL REVIEW: Practise one full Funksionele Skryf piece under timed conditions. Early night."},
+  {date:"Mon 15 Jun",sessions:[
+    {sub:"CAT",time:"15:00 – 16:30",task:"CAT Theory: Full Grade 10 revision – all examinable prior content."},
+    {sub:"CAT",time:"17:00 – 18:30",task:"CAT Theory: Final review of all theory sections."},
   ]},
-  {date:"Tue 16 Jun",isExam:true,sessions:[
-    {sub:"Afrikaans",time:"EXAM",task:"Afrikaans P2 (2.5hrs, 100 marks). After exam: begin CAT Theory review – system and network tech."},
-  ]},
-  {date:"Wed 17 Jun",sessions:[
+  {date:"Tue 16 Jun",sessions:[
     {sub:"CAT",time:"15:00 – 16:30",task:"CAT Theory: System Technologies – hardware, software, storage, processing. Review all notes."},
     {sub:"CAT",time:"17:00 – 18:30",task:"CAT Theory: Internet & Network Technologies – protocols, network types, security."},
   ]},
-  {date:"Thu 18 Jun",sessions:[
+  {date:"Wed 17 Jun",sessions:[
     {sub:"CAT",time:"15:00 – 16:30",task:"CAT Theory: Information Management + Social Implications. Review notes and Grade 10 work."},
     {sub:"CAT",time:"17:00 – 18:30",task:"CAT Theory: Solution Development – algorithms, spreadsheet logic, database concepts."},
   ]},
+  {date:"Thu 18 Jun",isExam:true,sessions:[
+    {sub:"Life Orientation",time:"EXAM",task:"Life Orientation & Life Sciences PAT (combined exam). After exam: CAT Theory final review."},
+  ]},
   {date:"Fri 19 Jun",sessions:[
-    {sub:"CAT",time:"15:00 – 16:30",task:"CAT Theory: Full Grade 10 revision – all examinable prior content."},
-    {sub:"Rest / Light Review",time:"17:00 – 18:00",task:"Light review of weakest CAT Theory area. Wind down for the weekend."},
+    {sub:"Rest / Light Review",time:"Anytime",task:"Light review or rest. Wind down for the weekend."},
   ]},
   {date:"Sat 20 Jun",isWeekend:true,sessions:[
-    {sub:"CAT",time:"09:00 – 11:00",task:"CAT Theory: Full past paper practice under timed conditions (2hrs). Mark and note errors."},
-    {sub:"Rest / Light Review",time:"Afternoon",task:"Rest. Review mock errors lightly in the evening if needed."},
+    {sub:"CAT",time:"09:00 – 11:00",task:"CAT Theory: Full past paper practice under timed conditions (2hrs)."},
+    {sub:"Rest / Light Review",time:"Afternoon",task:"Rest and review."},
   ]},
   {date:"Sun 21 Jun",isWeekend:true,sessions:[
-    {sub:"CAT",time:"09:00 – 10:30",task:"FINAL REVIEW: Go through all weak areas from mock. Consolidate notes on each theory section."},
-    {sub:"Rest / Light Review",time:"Afternoon",task:"Rest fully. Everything is covered. Early night before the last exam."},
+    {sub:"Rest / Light Review",time:"Anytime",task:"Final rest before last exams. Early night."},
   ]},
-  {date:"Mon 22 Jun",isExamWeek:true,sessions:[
-    {sub:"CAT",time:"15:00 – 16:30",task:"FINAL REVIEW: Light run-through of all CAT Theory sections. No new material – consolidate only."},
+  {date:"Mon 22 Jun",isExam:true,sessions:[
+    {sub:"Afrikaans",time:"EXAM",task:"Afrikaans P2 (2.5hrs, 100 marks). After exam: CAT Theory final review."},
   ]},
   {date:"Tue 23 Jun",isExam:true,sessions:[
     {sub:"CAT",time:"EXAM",task:"CAT Theory (2hrs, 100 marks). Last exam. Done."},
+  ]},
+  {date:"Wed 24 Jun",isExam:true,sessions:[
+    {sub:"Accounting",time:"EXAM",task:"Accounting (2.5hrs, 220 marks). Exam period complete."},
   ]},
 ];
 
